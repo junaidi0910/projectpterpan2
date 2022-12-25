@@ -10,7 +10,7 @@ if (isset($_POST['simpan'])) {
     $username=mysqli_real_escape_string($koneksi, $_POST['username']);
     $password=mysqli_real_escape_string($koneksi, md5($_POST['password']));
     $no_telp=mysqli_real_escape_string($koneksi, $_POST['no_telp']);
-    $status="";
+    $status=mysqli_real_escape_string($koneksi, $_POST['status']);
     $nip="";
     $ekstensi_diperbolehkan = array('png', 'jpg', 'JPG', 'PNG', 'jpeg', 'JPEG','HEIC');
     $foto_user = $_FILES['foto_user']['name'];
@@ -311,6 +311,10 @@ if (isset($_POST['edit'])) {
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">No Telp</label>
                         <input type="text" autocomplete="off" name="no_telp" placeholder="No Telp" class="form-control form-control-sm is-valid">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Status</label>
+                        <input type="text" autocomplete="off" name="status" placeholder="Status Driver" class="form-control form-control-sm is-valid">
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Foto (Jika ada)</label>

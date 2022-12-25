@@ -19,9 +19,15 @@ if (isset($_POST['simpan'])) {
     $jumlah_penumpang=mysqli_real_escape_string($koneksi, $_POST['jumlah_penumpang']);
     $nama_driver=mysqli_real_escape_string($koneksi, $_POST['nama_driver']);
     $status_read=1;
-    $input=mysqli_query($koneksi,"INSERT INTO tbl_kegiatan VALUES(NULL,'$id_pegawai','$unit_kerja','$kegiatan','$tujuan','$tgl','$mulai_jam','$sampai_jam','$jumlah_penumpang','$nama_driver','$status_read')");
-    echo "<script>window.alert('Submit Berhasil')
-    window.location='form-request-driver.php'</script>";
+    $sql_cek_mulai_jam = mysqli_query($koneksi, "SELECT * FROM tbl_kegiatan WHERE mulai_jam = '$mulai_jam'") or die (mysqli_error($koneksi));
+    
+    if(mysqli_num_rows($sql_cek_mulai_jam) > 0) {
+        echo "<script>alert('Waktu Berangkat sudah dipilih,silahkan pilih waktu lain!'); window.location='form-request-driver.php'</script>";
+    } else{
+        mysqli_query($koneksi,"INSERT INTO tbl_kegiatan VALUES(NULL,'$id_pegawai','$unit_kerja','$kegiatan','$tujuan','$tgl','$mulai_jam','$sampai_jam','$jumlah_penumpang','$nama_driver','$status_read')");
+    echo "<script>alert('Submit Berhasil'); window.location='form-request-driver.php'</script>";
+    }
+    
 }
 if (isset($_GET['aksi'])=="hapus") {
     $id_kegiatan=mysqli_real_escape_string($koneksi, $_GET['aqsw']);
@@ -108,6 +114,7 @@ if (isset($_GET['aksi'])=="hapus") {
                                     <th scope="col">Sampai Jam</th>
                                     <th scope="col">Jumlah Penumpang</th>
                                     <th scope="col">Nama Driver</th>
+                                    <th scope="col">Nama Mobil</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -139,6 +146,7 @@ if (isset($_GET['aksi'])=="hapus") {
                                         <td><?= $tampil_permintaan['sampai_jam']; ?></td>
                                         <td style="text-align: center;"><?= $tampil_permintaan['jumlah_penumpang']; ?></td>
                                         <td><span class="badge bg-primary"><?= $tampil_permintaan['nama_driver']; ?></span></td>
+                                        <td><?= $tampil_permintaan['nama_mobil']; ?></td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
@@ -207,7 +215,7 @@ if (isset($_GET['aksi'])=="hapus") {
                                             <input type="number" name="jumlah_penumpang" class="form-control" placeholder="Jumlah Penumpang" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="nama pemohon" class="form-label">Driver</label>
+                                            <label for="nama pemohon" class="form-label">Pilih Driver</label>
                                             <select class="form-select form-select-sm" name="nama_driver" required>
                                                 <option value="">--Pilih--</option>
                                                 <?php 
@@ -218,6 +226,21 @@ if (isset($_GET['aksi'])=="hapus") {
                                                 <?php } ?>
                                             </select>
                                         </div>
+
+                                        
+                                        <div class="mb-3">
+                                            <label for="nama mobil" class="form-label">Pilih Mobil</label>
+                                            <select class="form-select form-select-sm" name="nama_mobil" required>
+                                                <option value="">--Pilih--</option>
+                                                <?php 
+                                                $mobil=mysqli_query($koneksi,"SELECT * FROM mobil");
+                                                while ($row_mobil=mysqli_fetch_array($mobil)) {
+                                                    ?>
+                                                    <option value="<?= $row_mobil['nama_mobil']; ?>"><?= $row_mobil['nama_mobil']; ?> - <?= $row_mobil['no_plat']; ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+
                                     </div>
                                 </div>
                                 <button type="submit" name="simpan" class="btn btn-primary">Submit</button>
